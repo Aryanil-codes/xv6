@@ -37,3 +37,6 @@ entry("sbrk");
 entry("sleep");
 entry("uptime");
 entry("waitx");
+
+# added
+entry("getSysCount"); 

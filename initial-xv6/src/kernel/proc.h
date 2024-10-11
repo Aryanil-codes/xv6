@@ -119,6 +119,7 @@ struct proc
   uint rtime;                  // How long the process ran for
   uint ctime;                  // When was the process created
   uint etime;                  // When did the process exited
+  int syscall_counts[32]; // Array to store syscall counts, assuming a max of 31 syscalls  added
 };
 
 extern struct proc proc[NPROC];

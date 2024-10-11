@@ -108,3 +108,29 @@ sys_waitx(void)
     return -1;
   return ret;
 }
+
+//added
+uint64 sys_getSysCount(void)
+{
+
+  int syscall_num;
+
+  argint(0, &syscall_num);
+
+  // printf("%d", syscall_num);
+
+  // Validate that syscall_num is within the correct range
+  if (syscall_num < 0 || syscall_num >= 30)
+  {
+    return -1; // Invalid syscall number
+  }
+
+  // Get the current process
+  struct proc *p = myproc();
+
+  // Sum syscall counts from this process and all its children
+  int total = p->syscall_counts[syscall_num];
+
+  return total;
+}
+
