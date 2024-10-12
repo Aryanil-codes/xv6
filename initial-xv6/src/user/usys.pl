@@ -40,3 +40,5 @@ entry("waitx");
 
 # added
 entry("getSysCount"); 
+entry("sigalarm");
+entry("sigreturn");

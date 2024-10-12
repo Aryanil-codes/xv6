@@ -120,6 +120,12 @@ struct proc
   uint ctime;                  // When was the process created
   uint etime;                  // When did the process exited
   int syscall_counts[32]; // Array to store syscall counts, assuming a max of 31 syscalls  added
+  //added for alarm
+  int alarm_interval;
+  uint64 alarm_handler;
+  int ticks_since_alarm;
+  struct trapframe *alarm_trapframe;
+  int alarm_active;
 };
 
 extern struct proc proc[NPROC];

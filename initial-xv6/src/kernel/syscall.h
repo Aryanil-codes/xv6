@@ -22,3 +22,5 @@
 #define SYS_close  21
 #define SYS_waitx  22
 #define SYS_getSysCount  23 //addded
+#define SYS_sigalarm  24  // for alarmtest
+#define SYS_sigreturn 25  // for alarmtest

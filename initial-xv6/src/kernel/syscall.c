@@ -102,7 +102,9 @@ extern uint64 sys_link(void);
 extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
 extern uint64 sys_waitx(void);
-extern uint64 sys_getSysCount(void);
+extern uint64 sys_getSysCount(void);//added
+extern uint64 sys_sigalarm(void);
+extern uint64 sys_sigreturn(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -130,6 +132,8 @@ static uint64 (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_waitx]   sys_waitx,
 [SYS_getSysCount]    sys_getSysCount, //added
+[SYS_sigalarm]   sys_sigalarm,//added
+[SYS_sigreturn]  sys_sigreturn,//added
 };
 
 

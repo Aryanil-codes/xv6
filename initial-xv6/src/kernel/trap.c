@@ -34,7 +34,6 @@ void trapinithart(void)
 void usertrap(void)
 {
   int which_dev = 0;
-
   if ((r_sstatus() & SSTATUS_SPP) != 0)
     panic("usertrap: not from user mode");
 
@@ -47,10 +46,8 @@ void usertrap(void)
   // save user program counter.
   p->trapframe->epc = r_sepc();
 
-  if (r_scause() == 8)
-  {
+  if (r_scause() == 8) {
     // system call
-
     if (killed(p))
       exit(-1);
 
@@ -61,26 +58,34 @@ void usertrap(void)
     // an interrupt will change sepc, scause, and sstatus,
     // so enable only now that we're done with those registers.
     intr_on();
-
     syscall();
-  }
-  else if ((which_dev = devintr()) != 0)
-  {
+  } else if ((which_dev = devintr()) != 0) {
     // ok
-  }
-  else
-  {
+  } else {
     printf("usertrap(): unexpected scause %p pid=%d\n", r_scause(), p->pid);
-    printf("            sepc=%p stval=%p\n", r_sepc(), r_stval());
+    printf(" sepc=%p stval=%p\n", r_sepc(), r_stval());
     setkilled(p);
   }
 
   if (killed(p))
     exit(-1);
 
-  // give up the CPU if this is a timer interrupt.
-  if (which_dev == 2)
+  // give up the CPU if this is a timer interrupt. added
+  if (which_dev == 2) {
+    // Add alarm handling code here
+    if (p->alarm_interval > 0) {
+      p->ticks_since_alarm++;
+      if (p->ticks_since_alarm >= p->alarm_interval && !p->alarm_active) {
+        p->ticks_since_alarm = 0;
+        p->alarm_active = 1;
+        if (p->alarm_trapframe == 0)
+          p->alarm_trapframe = kalloc();
+        memmove(p->alarm_trapframe, p->trapframe, sizeof(struct trapframe));
+        p->trapframe->epc = p->alarm_handler;
+      }
+    }
     yield();
+  }
 
   usertrapret();
 }

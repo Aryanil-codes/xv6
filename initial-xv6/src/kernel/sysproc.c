@@ -134,3 +134,47 @@ uint64 sys_getSysCount(void)
   return total;
 }
 
+//added for alarmtest
+
+uint64
+sys_sigalarm(void)
+{
+  int interval;
+  uint64 handler;
+
+  argint(0, &interval);
+  argaddr(1, &handler);
+  
+  struct proc *p = myproc();
+  
+  // Disable the alarm if interval is 0
+  if (interval == 0) {
+    p->alarm_interval = 0;
+    p->alarm_handler = 0;
+    p->ticks_since_alarm = 0;
+    p->alarm_active = 0;
+    if (p->alarm_trapframe) {
+      kfree(p->alarm_trapframe);
+      p->alarm_trapframe = 0;
+    }
+  } else {
+    p->alarm_interval = interval;
+    p->alarm_handler = handler;
+    p->ticks_since_alarm = 0;
+    p->alarm_active = 0;
+  }
+
+  return 0;
+}
+
+uint64
+sys_sigreturn(void)
+{
+  struct proc *p = myproc();
+  if(p->alarm_trapframe) {
+    memmove(p->trapframe, p->alarm_trapframe, sizeof(struct trapframe));
+    p->alarm_active = 0;
+  }
+  return 0;
+}
+
